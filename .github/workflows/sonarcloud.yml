@@ -9,7 +9,7 @@ on:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,17 +28,17 @@ jobs:
 
       - name: Install SonarCloud Scanner
         run: |
-          curl -sL https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper-linux-x86.zip
-          unzip build-wrapper-linux-x86.zip -d ~/sonar-scanner
-          export PATH="$PATH:~/sonar-scanner/build-wrapper-linux-x86"
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip -d $HOME
+          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
 
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          sonar-scanner \\
-          -Dsonar.organization=gusanitor8 \\
-          -Dsonar.projectKey=gusanitor8_sonarcloud-analysis \\
-          -Dsonar.sources=. \\
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=$SONAR_TOKEN
+          sonar-scanner \
+            -Dsonar.organization=gusanitor8 \
+            -Dsonar.projectKey=gusanitor8_sonarcloud-analysis \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
