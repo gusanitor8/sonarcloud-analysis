@@ -28,7 +28,7 @@ jobs:
 
       - name: Install SonarCloud Scanner
         run: |
-          curl -sL <https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip> -o build-wrapper-linux-x86.zip
+          curl -sL https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper-linux-x86.zip
           unzip build-wrapper-linux-x86.zip -d ~/sonar-scanner
           export PATH="$PATH:~/sonar-scanner/build-wrapper-linux-x86"
 
