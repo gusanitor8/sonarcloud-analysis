@@ -33,8 +33,8 @@ def sql_injection(name: str):
     """
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    query = f"SELECT * FROM users WHERE name = '{name}'"  # ⚠️ vulnerable
-    cur.execute(query)
+    query = "SELECT * FROM users WHERE name = ?"  # Uso de parámetros para prevenir SQL injection
+    cur.execute(query, (name,))
     print(cur.fetchall())
     conn.close()
 
