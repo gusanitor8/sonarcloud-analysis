@@ -8,6 +8,7 @@ import hashlib
 import os
 import pickle
 import random
+import shlex
 import sqlite3
 import subprocess
 from pathlib import Path
@@ -22,7 +23,8 @@ def os_command_injection():
     El usuario controla todo el comando.
     """
     cmd = input("Comando a ejecutar: ")
-    os.system(cmd)                     # ⚠️ shell injection
+    safe_cmd = shlex.split(cmd)  # Sanitiza el comando dividiéndolo en argumentos seguros
+    subprocess.run(safe_cmd, check=True)  # Usa subprocess.run para evitar shell injection
 
 def sql_injection(name: str):
     """
