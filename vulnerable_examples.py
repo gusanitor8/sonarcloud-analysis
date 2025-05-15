@@ -14,7 +14,7 @@ from pathlib import Path
 
 DB_PATH = "users.db"
 # VULN-1: Secreto hard-codeado (regla S2068 – “Hard-coded credentials”)
-JWT_SECRET = "super-secret-key-123"
+JWT_SECRET = os.getenv("JWT_SECRET", "default-secret")  # Usar variable de entorno con valor por defecto
 
 def os_command_injection():
     """
