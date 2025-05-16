@@ -44,8 +44,11 @@ def insecure_deserialization():
     Carga objetos arbitrarios desde entrada externa.
     """
     payload = input("Pega payload pickle: ")
-    obj = pickle.loads(payload.encode())  # ⚠️ code execution risk
-    print(obj)
+    try:
+        obj = pickle.loads(payload.encode())  # ⚠️ code execution risk
+        print(obj)
+    except pickle.UnpicklingError:
+        print("Error: Payload no válido o potencialmente peligroso.")
 
 def weak_crypto(password: str):
     """
