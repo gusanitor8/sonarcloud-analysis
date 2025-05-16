@@ -56,7 +56,6 @@ def weak_crypto(password: str):
     VULN-5: Algoritmo criptográfico débil (regla S2070)
     MD5 no es seguro para contraseñas.
     """
-    # digest = hashlib.md5(password.encode()).hexdigest()  # ⚠️ vulnerable
     digest = hashlib.sha256(password.encode()).hexdigest()  # Uso de SHA-256 más seguro
     print(f"SHA-256 hash: {digest}")
 
@@ -66,7 +65,6 @@ def predictable_random_token():
     VULN-6: Aleatoriedad predecible (regla S2245)
     Uso de random.random() para generar tokens.
     """
-    # token = str(random.random())  # ⚠️ inseguro
     import secrets
     token = secrets.token_hex(16)  # Uso de secrets para generar tokens seguros
     print(f"Token seguro: {token}")
