@@ -50,13 +50,15 @@ def insecure_deserialization():
     except pickle.UnpicklingError:
         print("Error: Payload no válido o potencialmente peligroso.")
 
+# VULN-5: Algoritmo criptográfico débil (regla S2070)
 def weak_crypto(password: str):
     """
     VULN-5: Algoritmo criptográfico débil (regla S2070)
     MD5 no es seguro para contraseñas.
     """
-    digest = hashlib.md5(password.encode()).hexdigest()
-    print(f"MD5 hash: {digest}")
+    # digest = hashlib.md5(password.encode()).hexdigest()  # ⚠️ vulnerable
+    digest = hashlib.sha256(password.encode()).hexdigest()  # Uso de SHA-256 más seguro
+    print(f"SHA-256 hash: {digest}")
 
 def predictable_random_token():
     """
