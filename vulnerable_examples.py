@@ -1,0 +1,83 @@
+# vulnerable_examples.py
+"""
+❗️ CÓDIGO INTENCIONALMENTE INSEGURO – SOLO PARA PROBAR SONARCLOUD.
+NO uses esto en producción. 
+"""
+
+import hashlib
+import os
+import pickle
+import random
+import shlex
+import sqlite3
+import subprocess
+from pathlib import Path
+
+DB_PATH = "users.db"
+# VULN-1: Secreto hard-codeado (regla S2068 – “Hard-coded credentials”)
+JWT_SECRET = os.getenv("JWT_SECRET", "default-secret")  # Usar variable de entorno con valor por defecto
+
+def os_command_injection():
+    """
+    VULN-2: Inyección de comandos (regla S6073 / S5131)
+    El usuario controla todo el comando.
+    """
+    cmd = input("Comando a ejecutar: ")
+    safe_cmd = shlex.split(cmd)  # Sanitiza el comando dividiéndolo en argumentos seguros
+    subprocess.run(safe_cmd, check=True)  # Usa subprocess.run para evitar shell injection
+
+def sql_injection(name: str):
+    """
+    VULN-3: SQL injection (regla S3649)
+    Concatenación directa en el query.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    query = "SELECT * FROM users WHERE name = ?"  # Uso de parámetros para prevenir SQL injection
+    cur.execute(query, (name,))
+    print(cur.fetchall())
+    conn.close()
+
+def insecure_deserialization():
+    """
+    VULN-4: Deserialización insegura (regla S5135)
+    Carga objetos arbitrarios desde entrada externa.
+    """
+    payload = input("Pega payload pickle: ")
+    try:
+        obj = pickle.loads(payload.encode())  # ⚠️ code execution risk
+        print(obj)
+    except pickle.UnpicklingError:
+        print("Error: Payload no válido o potencialmente peligroso.")
+
+# VULN-5: Algoritmo criptográfico débil (regla S2070)
+def weak_crypto(password: str):
+    """
+    VULN-5: Algoritmo criptográfico débil (regla S2070)
+    MD5 no es seguro para contraseñas.
+    """
+    digest = hashlib.sha256(password.encode()).hexdigest()  # Uso de SHA-256 más seguro
+    print(f"SHA-256 hash: {digest}")
+
+# VULN-6: Aleatoriedad predecible (regla S2245)
+def predictable_random_token():
+    """
+    VULN-6: Aleatoriedad predecible (regla S2245)
+    Uso de random.random() para generar tokens.
+    """
+    import secrets
+    token = secrets.token_hex(16)  # Uso de secrets para generar tokens seguros
+    print(f"Token seguro: {token}")
+
+def path_traversal():
+    """
+    EXTRA: Path traversal (regla S2083)
+    """
+    filename = input("¿Qué archivo leer?: ")  # ../../etc/passwd
+    safe_filename = os.path.basename(filename)  # Sanitiza el nombre del archivo
+    data = Path(safe_filename).read_text(encoding="utf-8")
+    print(data)
+
+if __name__ == "__main__":
+    # Ejecuta alguna de las funciones para generar issues.
+    os_command_injection()
