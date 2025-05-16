@@ -76,7 +76,8 @@ def path_traversal():
     EXTRA: Path traversal (regla S2083)
     """
     filename = input("¿Qué archivo leer?: ")  # ../../etc/passwd
-    data = Path(filename).read_text(encoding="utf-8")
+    safe_filename = os.path.basename(filename)  # Sanitiza el nombre del archivo
+    data = Path(safe_filename).read_text(encoding="utf-8")
     print(data)
 
 if __name__ == "__main__":
