@@ -60,12 +60,16 @@ def weak_crypto(password: str):
     digest = hashlib.sha256(password.encode()).hexdigest()  # Uso de SHA-256 más seguro
     print(f"SHA-256 hash: {digest}")
 
+# VULN-6: Aleatoriedad predecible (regla S2245)
 def predictable_random_token():
     """
-    EXTRA: Aleatoriedad predecible (regla S2245)
+    VULN-6: Aleatoriedad predecible (regla S2245)
+    Uso de random.random() para generar tokens.
     """
-    token = str(random.random())
-    print(f"Token inseguro: {token}")
+    # token = str(random.random())  # ⚠️ inseguro
+    import secrets
+    token = secrets.token_hex(16)  # Uso de secrets para generar tokens seguros
+    print(f"Token seguro: {token}")
 
 def path_traversal():
     """
